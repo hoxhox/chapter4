@@ -1,0 +1,25 @@
+human<-read.csv("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human1.txt")
+human$GNI<-as.numeric(human$GNI)
+str(human$GNI)
+keep.col<- c("Country", "Edu2.FM", "Labo.FM", "Edu.Exp", "Life.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F" )
+human <- select(human, one_of(keep.col))
+
+# filter out all rows with NA values
+data.frame(human[-1], comp = complete.cases(human))
+human_ <- filter(human, complete.cases(human))
+
+tail<-tail(human_, 7)
+last <- nrow(human_) - 7
+human_<-human_[1:last, ]
+
+row.names(human_)<-human_$Country
+row.names(human_)
+human<-human_
+
+#Removinc column "country"
+human<- human(!(human$Country))
+human<-human[,(-1)]
+
+
+read.table(human, "C:\Users\Anna-Mari\Desktop\IODS-project1")
+
