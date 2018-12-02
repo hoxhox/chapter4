@@ -23,3 +23,113 @@ human<-human[,(-1)]
 
 read.table(human, "C:\Users\Anna-Mari\Desktop\IODS-project1")
 
+
+
+---
+title: "chapter5"
+author: "am"
+date: "2018 M12 1"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+
+The human development index data describes 155 countries in 8 different variables. The variables contain maternal mortality, female to male ratio of labor and education, GNI, expected years of education and life expectancy and adolescent birth ratio.
+
+```{r pressure, echo=FALSE}
+gather(human) %>% ggplot(aes(value))  + facet_wrap("key", scales = "free") + geom_histogram() 
+
+```
+The expected years of education (Edu.exp) and the female to male education ratio are almost normalli distributed. Other variables variables aren't normally distibuted, all of them are the variables are skewed.
+
+
+```{r pressure, echo=FALSE}
+corhuman<-cor(human[-1])
+corhuman <-round(corhuman, digits=2)
+corhuman
+corrplot(corhuman, method = "color") 
+
+```
+Maternal mortality is higly correlated to many of the variables concerning quality of life and life expectancy. It is negatively correlated to adolescent birth ratio (ado.birth) and female to male labour ratio (Labo.FM).
+
+
+Next we plot maternal mortality and life expectancy scatterplot to demonstrate the correlation. The lower the mortality, the higher the life expecentacy, as expected.
+
+```
+{r pressure, echo=FALSE}
+p11 <- ggplot(human, aes(x = Mat.Mor, y = Life.Exp))
+p11 + geom_point() + ggtitle("Relationship between Maternal mortality and life expectancy") + geom_smooth(method = "lm")
+
+```
+
+
+#PCA Analysis
+#Without scaling
+
+```{r pressure, echo=FALSE}
+
+human_pca <- prcomp(human[-1])
+summary(human_pca)
+
+
+```
+
+PC1 holds 92% of the variance, and PC2 onlyt 5%.
+
+```{r pressure, echo=FALSE}
+
+biplot(human_pca,  col = c("blue", "deeppink2"), xlim=c(-0.5, 0.5), ylim=c(-0.4, 0.2))
+
+
+```
+options(warn = -1)
+
+
+```{r pressure, echo=FALSE}
+
+
+```
+```{r pressure, echo=FALSE}
+
+human_std <- scale(human)
+human_pca_std <- prcomp(human_std) # Do PCA for the standardized data
+s <- summary(human_pca_std)
+
+summary(human_pca_std)
+
+
+```
+After scaling the variance of the principal components changes so, that PC 1 holds 48% of varianve and PC2 12%.
+
+
+
+#MCA analysis
+#install.packages("FactoMineR")
+library("FactoMineR") 
+data("tea")
+
+```{r pressure, echo=FALSE}
+str(tea)
+summary(tea)
+
+```
+
+
+keep_columns <- c("Tea", "How", "how", "sugar", "where", "spirituality", "healthy") 
+tea_time <- dplyr::select(tea, one_of(keep_columns))
+mca_tea_time <- MCA(tea_time, graph = FALSE)
+
+```{r pressure, echo=FALSE}
+summary(mca_tea_time)
+
+```
+
+
+```{r pressure, echo=FALSE}
+plot(mca_tea_time, invisible=c("ind"), habillage = "quali")
+
+```
